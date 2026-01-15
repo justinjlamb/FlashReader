@@ -18,6 +18,12 @@ Displays text one word at a time with a highlighted **ORP (Optimal Recognition P
 - Spritz-style guide lines for eye positioning
 - Progress indicator
 
+## Install
+
+1. Download `FlashReader-1.0.0.zip` from [Releases](https://github.com/justinjlamb/FlashReader/releases)
+2. Unzip and drag `FlashReader.app` to Applications
+3. On first launch, right-click → Open (to bypass Gatekeeper for unsigned apps)
+
 ## Keyboard Shortcuts
 
 | Key | Action |
@@ -30,7 +36,7 @@ Displays text one word at a time with a highlighted **ORP (Optimal Recognition P
 | Esc | Stop and reset |
 | ? | Show help |
 
-## Build
+## Build from Source
 
 Requires macOS 14.0+ (Sonoma) and Xcode 15+.
 
