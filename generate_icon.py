@@ -99,8 +99,9 @@ def create_icon(size):
     return img
 
 def main():
-    # Output directory
-    output_dir = "/Users/justin/Developer/FlashReader/FlashReader/Assets.xcassets/AppIcon.appiconset"
+    # Output directory (relative to script location)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output_dir = os.path.join(script_dir, "FlashReader/Assets.xcassets/AppIcon.appiconset")
 
     # Required sizes for macOS
     # Format: (size, scale, filename)
