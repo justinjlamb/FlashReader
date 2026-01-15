@@ -1,44 +1,47 @@
 # FlashReader
 
-A Spritz-style RSVP (Rapid Serial Visual Presentation) speed reading app for macOS.
+**Read faster with less effort.** FlashReader displays text one word at a time, helping you focus and reduce eye movement. Great for articles, documents, or anything you want to get through quickly.
 
-![macOS](https://img.shields.io/badge/macOS-14.0+-black)
-![Swift](https://img.shields.io/badge/Swift-5.9-orange)
-![License](https://img.shields.io/badge/license-MIT-blue)
-
-## What It Does
-
-Displays text one word at a time with a highlighted **ORP (Optimal Recognition Point)** letter. This technique reduces eye movement and can help with focus and reading speed.
-
-## Features
-
-- Clean, distraction-free reading interface
-- Adjustable speed (100-1000 WPM)
-- Keyboard-driven controls
-- Spritz-style guide lines for eye positioning
-- Progress indicator
+![FlashReader reading view](assets/screenshot-reader.png)
 
 ## Install
 
-1. Download `FlashReader-1.0.0.zip` from [Releases](https://github.com/justinjlamb/FlashReader/releases)
-2. Unzip and drag `FlashReader.app` to Applications
-3. On first launch, right-click → Open (to bypass Gatekeeper for unsigned apps)
+1. **[Download FlashReader](https://github.com/justinjlamb/FlashReader/releases/latest)** (click the `.zip` file)
+2. Unzip and drag to Applications
+3. First time opening: right-click the app → click "Open" → click "Open" again
 
-## Keyboard Shortcuts
+> macOS shows a warning because the app isn't from the App Store. This is normal for free, open-source apps.
 
-| Key | Action |
-|-----|--------|
-| Space | Play / Pause |
-| ↑ | Increase speed (+25 WPM) |
-| ↓ | Decrease speed (-25 WPM) |
-| ← | Back 10 words |
-| → | Forward 10 words |
-| Esc | Stop and reset |
-| ? | Show help |
+## How to Use
+
+![FlashReader input screen](assets/screenshot-input.png)
+
+1. Open FlashReader
+2. Paste any text (Cmd+V)
+3. Click **Start Reading** (or Cmd+Return)
+4. Press **Space** to pause/resume
+
+## Controls
+
+| Key | What it does |
+|-----|--------------|
+| Space | Pause / Resume |
+| ↑ / ↓ | Speed up / Slow down |
+| ← / → | Skip backward / forward |
+| Esc | Stop and go back |
+| ? | Show all shortcuts |
+
+## Requirements
+
+- macOS 14 (Sonoma) or newer
+- That's it. No account, no internet, no tracking.
 
 ## Build from Source
 
-Requires macOS 14.0+ (Sonoma) and Xcode 15+.
+<details>
+<summary>For developers</summary>
+
+Requires Xcode 15+.
 
 ```bash
 git clone https://github.com/justinjlamb/FlashReader.git
@@ -46,17 +49,10 @@ cd FlashReader
 xcodebuild -scheme FlashReader -configuration Release build
 ```
 
-The built app will be in `~/Library/Developer/Xcode/DerivedData/FlashReader-*/Build/Products/Release/`.
+The app will be in `~/Library/Developer/Xcode/DerivedData/FlashReader-*/Build/Products/Release/`.
 
-Or open `FlashReader.xcodeproj` in Xcode and build from there.
-
-## Usage
-
-1. Launch FlashReader
-2. Paste or type text into the input area
-3. Press **Cmd+Return** or click "Start Reading"
-4. Use **Space** to pause/resume, **arrows** to adjust speed
+</details>
 
 ## License
 
-MIT
+MIT - Use it however you want.
