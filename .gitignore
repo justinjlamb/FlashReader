@@ -1,6 +1,10 @@
 # macOS
 .DS_Store
 
+# Claude Code context (personal)
+CLAUDE.md
+CONTEXT.md
+
 # Xcode
 *.xcodeproj/xcuserdata/
 *.xcworkspace/xcuserdata/
