@@ -12,7 +12,6 @@ class ReaderState {
     // MARK: - UI State
 
     var showSpeedIndicator: Bool = false
-    var hasShownSeizureWarning: Bool = UserDefaults.standard.bool(forKey: "hasShownSeizureWarning")
     var showHelpOverlay: Bool = false
     var inputText: String = ""
 
@@ -114,11 +113,6 @@ class ReaderState {
         words = []
         currentIndex = 0
         inputText = ""
-    }
-
-    func markSeizureWarningSeen() {
-        hasShownSeizureWarning = true
-        UserDefaults.standard.set(true, forKey: "hasShownSeizureWarning")
     }
 
     // MARK: - Private Methods

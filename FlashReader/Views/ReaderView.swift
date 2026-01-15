@@ -2,9 +2,8 @@ import SwiftUI
 
 struct ReaderView: View {
     @Environment(ReaderState.self) private var state
-    @State private var showSpeedIndicator = false
-    @State private var displayedWPM: Int = 250
     @State private var showHelp = false
+    @State private var controlBarHovered = false
     @FocusState private var isFocused: Bool
 
     var body: some View {
@@ -14,33 +13,22 @@ struct ReaderView: View {
 
             VStack(spacing: 0) {
                 // Main reading area
-                ZStack {
-                    if let word = state.currentWord {
-                        WordDisplayView(word: word, isPaused: !state.isPlaying)
-                    } else {
-                        Text("No content")
-                            .font(.system(size: 24, design: .monospaced))
-                            .foregroundStyle(.white.opacity(0.3))
-                    }
-
-                    // Speed indicator - top right
-                    VStack {
-                        HStack {
-                            Spacer()
-                            Text("\(displayedWPM) wpm")
-                                .font(.system(size: 14, design: .monospaced))
-                                .foregroundStyle(Color.orpAccent)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 6)
-                                .background(Color.void.opacity(0.8))
-                                .clipShape(RoundedRectangle(cornerRadius: 4))
-                                .opacity(showSpeedIndicator ? 1 : 0)
-                        }
-                        .padding(.top, 16)
-                        .padding(.trailing, 16)
-                        Spacer()
-                    }
+                if let word = state.currentWord {
+                    WordDisplayView(word: word, isPaused: !state.isPlaying)
+                } else {
+                    Text("No content")
+                        .font(.system(size: 24, design: .monospaced))
+                        .foregroundStyle(.white.opacity(0.3))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
+
+                // Control bar
+                ControlBar(isHovered: $controlBarHovered)
+                    .onHover { hovering in
+                        withAnimation(.easeOut(duration: 0.15)) {
+                            controlBarHovered = hovering
+                        }
+                    }
 
                 // Progress bar - hair-thin at bottom
                 ProgressBar(progress: state.progress)
@@ -60,12 +48,10 @@ struct ReaderView: View {
         }
         .onKeyPress(.upArrow) {
             state.adjustSpeed(25)
-            showSpeedChange()
             return .handled
         }
         .onKeyPress(.downArrow) {
             state.adjustSpeed(-25)
-            showSpeedChange()
             return .handled
         }
         .onKeyPress(.leftArrow) {
@@ -86,21 +72,107 @@ struct ReaderView: View {
         }
         .onAppear {
             isFocused = true
-            displayedWPM = state.currentWPM
         }
     }
+}
 
-    private func showSpeedChange() {
-        displayedWPM = state.currentWPM
-        withAnimation(.easeIn(duration: 0.15)) {
-            showSpeedIndicator = true
-        }
+// MARK: - Control Bar
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            withAnimation(.easeOut(duration: 0.3)) {
-                showSpeedIndicator = false
+struct ControlBar: View {
+    @Environment(ReaderState.self) private var state
+    @Binding var isHovered: Bool
+
+    private var baseOpacity: Double { isHovered ? 0.7 : 0.25 }
+
+    var body: some View {
+        HStack(spacing: 0) {
+            // Left: Position counter
+            Text("\(state.currentIndex + 1) / \(state.words.count)")
+                .font(.system(size: 11, design: .monospaced))
+                .foregroundStyle(.white.opacity(baseOpacity))
+                .frame(width: 100, alignment: .leading)
+
+            Spacer()
+
+            // Center: Navigation controls
+            HStack(spacing: 20) {
+                ControlButton(
+                    icon: "backward.fill",
+                    action: { state.skipBack() },
+                    baseOpacity: baseOpacity
+                )
+
+                // Play/Pause - slightly larger
+                Button(action: { state.togglePlayPause() }) {
+                    Image(systemName: state.isPlaying ? "pause.fill" : "play.fill")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(state.isPlaying ? Color.orpAccent : .white.opacity(baseOpacity))
+                        .frame(width: 32, height: 32)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+
+                ControlButton(
+                    icon: "forward.fill",
+                    action: { state.skipForward() },
+                    baseOpacity: baseOpacity
+                )
             }
+
+            Spacer()
+
+            // Right: Speed controls
+            HStack(spacing: 8) {
+                ControlButton(
+                    icon: "minus",
+                    action: { state.adjustSpeed(-25) },
+                    baseOpacity: baseOpacity
+                )
+
+                Text("\(state.currentWPM)")
+                    .font(.system(size: 12, weight: .medium, design: .monospaced))
+                    .foregroundStyle(.white.opacity(baseOpacity))
+                    .frame(width: 36, alignment: .center)
+
+                ControlButton(
+                    icon: "plus",
+                    action: { state.adjustSpeed(25) },
+                    baseOpacity: baseOpacity
+                )
+
+                Text("wpm")
+                    .font(.system(size: 10, design: .monospaced))
+                    .foregroundStyle(.white.opacity(baseOpacity * 0.6))
+            }
+            .frame(width: 100, alignment: .trailing)
         }
+        .padding(.horizontal, 24)
+        .padding(.vertical, 12)
+        .background(Color.void)
+    }
+}
+
+// MARK: - Control Button
+
+struct ControlButton: View {
+    let icon: String
+    let action: () -> Void
+    let baseOpacity: Double
+
+    @State private var isPressed = false
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: icon)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(isPressed ? Color.orpAccent : .white.opacity(baseOpacity))
+                .frame(width: 24, height: 24)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
+            isPressed = pressing
+        }, perform: {})
     }
 }
 

@@ -2,7 +2,6 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(ReaderState.self) private var state
-    @AppStorage("hasSeenSeizureWarning") private var hasSeenSeizureWarning = false
     @State private var inputText = ""
     @FocusState private var isTextFieldFocused: Bool
 
@@ -11,60 +10,12 @@ struct ContentView: View {
             Color.void
                 .ignoresSafeArea()
 
-            if !hasSeenSeizureWarning {
-                SeizureWarningView(hasSeenWarning: $hasSeenSeizureWarning)
-            } else if state.hasContent {
+            if state.hasContent {
                 ReaderView()
             } else {
                 TextInputView(inputText: $inputText, isTextFieldFocused: $isTextFieldFocused)
             }
         }
-    }
-}
-
-// MARK: - Seizure Warning View
-
-struct SeizureWarningView: View {
-    @Binding var hasSeenWarning: Bool
-
-    var body: some View {
-        VStack(spacing: 24) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 48))
-                .foregroundStyle(Color.orpAccent)
-
-            Text("Photosensitivity Warning")
-                .font(.system(size: 24, weight: .semibold, design: .monospaced))
-                .foregroundStyle(.white)
-
-            Text("FlashReader displays words rapidly, which may cause discomfort or trigger seizures in people with photosensitive conditions.")
-                .font(.system(size: 14, design: .monospaced))
-                .foregroundStyle(.white.opacity(0.8))
-                .multilineTextAlignment(.center)
-                .lineSpacing(4)
-                .frame(maxWidth: 400)
-
-            Text("At speeds above 180 WPM, words change more than 3 times per second.")
-                .font(.system(size: 12, design: .monospaced))
-                .foregroundStyle(.white.opacity(0.5))
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: 400)
-
-            Button(action: {
-                hasSeenWarning = true
-            }) {
-                Text("I Understand")
-                    .font(.system(size: 14, weight: .medium, design: .monospaced))
-                    .foregroundStyle(.black)
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 12)
-                    .background(Color.orpAccent)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-            }
-            .buttonStyle(.plain)
-            .padding(.top, 8)
-        }
-        .padding(48)
     }
 }
 
@@ -93,6 +44,7 @@ struct TextInputView: View {
                     .foregroundStyle(.white)
                     .scrollContentBackground(.hidden)
                     .background(Color(white: 0.08))
+                    .tint(Color.orpAccent)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
@@ -142,12 +94,6 @@ struct TextInputView: View {
         guard !trimmed.isEmpty else { return }
         state.loadText(trimmed)
     }
-}
-
-#Preview("Seizure Warning") {
-    ContentView()
-        .environment(ReaderState())
-        .frame(width: 800, height: 600)
 }
 
 #Preview("Text Input") {
